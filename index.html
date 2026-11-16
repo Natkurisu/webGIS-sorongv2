@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Asap Karhutla Kabupaten Sorong, 1–11 Oktober 2026</title>
+  <meta name="description" content="WebGIS sebaran asap karhutla hasil HYSPLIT dan fasilitas yang terdampak di Kabupaten Sorong, 1–11 Oktober 2026. PjBL SIG 2026, K-02 Kelompok 6.">
+  <link rel="stylesheet" href="lib/leaflet/leaflet.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="kepala">
+    <div class="isi">
+      <h1>Asap Karhutla Kabupaten Sorong</h1>
+      <p>Sebaran asap hasil pemodelan dan fasilitas yang terdampak, 1–11 Oktober 2026</p>
+      <p class="kecil">PjBL SIG 2026, K-02 Kelompok 6, Teknik Geodesi dan Geomatika ITB</p>
+    </div>
+  </header>
+
+  <main class="isi">
+    <!-- 1. Ringkasan angka -->
+    <section class="ringkas" aria-label="Ringkasan">
+      <div><strong id="s-titik">–</strong><span>titik panas di Kabupaten Sorong, 1–11 Oktober</span></div>
+      <div><strong id="s-fas">–</strong><span>fasilitas yang dipantau (OpenStreetMap)</span></div>
+      <div><strong id="s-kena">–</strong><span>fasilitas pernah terdampak asap</span></div>
+      <div><strong id="s-puncak">–</strong><span id="s-puncak-ket">waktu dengan fasilitas terdampak terbanyak</span></div>
+    </section>
+
+    <!-- 2. Peta -->
+    <section class="kartu peta-kartu">
+      <div class="kontrol">
+        <h2>Peta sebaran asap</h2>
+
+        <fieldset>
+          <legend>Tampilan waktu</legend>
+          <label><input type="radio" name="mode" value="harian" checked> Harian (rata-rata 24 jam)</label>
+          <label><input type="radio" name="mode" value="3jam"> Per 3 jam</label>
+        </fieldset>
+
+        <div class="waktu">
+          <strong id="w-teks">–</strong>
+          <input id="w-geser" type="range" min="0" max="0" value="0" aria-label="Waktu">
+          <div class="tombol-baris">
+            <button id="w-mundur" type="button" aria-label="Waktu sebelumnya">◀</button>
+            <button id="w-putar" type="button">Putar</button>
+            <button id="w-maju" type="button" aria-label="Waktu berikutnya">▶</button>
+          </div>
+        </div>
+
+        <fieldset>
+          <legend>Layer</legend>
+          <label><input type="checkbox" id="l-asap" checked> Sebaran asap</label>
+          <label><input type="checkbox" id="l-titik" checked> Titik panas pada hari ini</label>
+          <label><input type="checkbox" id="l-fas" checked> Fasilitas</label>
+          <label><input type="checkbox" id="l-batas" checked> Batas Kabupaten Sorong</label>
+          <label><input type="checkbox" id="l-sekitar"> Batas kabupaten/kota sekitar</label>
+        </fieldset>
+
+        <label class="geser">Transparansi asap <output id="alpha-o">40</output>%
+          <input id="alpha" type="range" min="0" max="90" step="5" value="40">
+        </label>
+
+        <label class="pilih">Peta dasar
+          <select id="dasar">
+            <option value="terang">OpenStreetMap, pucat</option>
+            <option value="osm">OpenStreetMap</option>
+            <option value="citra">Citra satelit harian (NASA GIBS)</option>
+          </select>
+        </label>
+
+        <div id="legenda" class="legenda"></div>
+      </div>
+      <div id="peta" aria-label="Peta"></div>
+    </section>
+
+    <!-- 3. Analisis overlay -->
+    <section class="kartu">
+      <h2>Analisis overlay: fasilitas terdampak</h2>
+      <p class="ket">Setiap fasilitas ditumpangkan pada raster asap. Fasilitas dihitung terdampak bila sel raster di lokasinya mencapai kelas yang dipilih. Kolom “kelas” mengikuti waktu yang sedang tampil di peta; “lama terdampak” dihitung dari seluruh periode 1–11 Oktober.</p>
+      <div class="saring">
+        <label>Terdampak mulai kelas
+          <select id="ambang"><option value="1">Sedang</option><option value="2" selected>Tinggi</option><option value="3">Sangat tinggi</option></select>
+        </label>
+        <label>Jenis fasilitas <select id="jenis"><option value="">Semua</option></select></label>
+        <label>Cari nama <input id="cari" type="search" placeholder="mis. SMA Negeri"></label>
+        <label class="cek"><input type="checkbox" id="hanya"> Hanya yang terdampak pada waktu ini</label>
+        <button id="unduh" type="button">Unduh tabel (CSV)</button>
+      </div>
+      <p id="t-ringkas" class="ket"></p>
+      <div class="tabel-wadah">
+        <table id="tabel">
+          <thead><tr><th>Nama</th><th>Jenis</th><th>Kelas pada waktu ini</th><th class="angka">Indeks</th><th class="angka">Lama terdampak</th><th>Pertama terdampak</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4. Grafik -->
+    <section class="dua">
+      <div class="kartu">
+        <h2>Fasilitas terdampak per hari</h2>
+        <p class="ket">Fasilitas dihitung bila terdampak pada salah satu rentang 3 jam di hari itu.</p>
+        <div class="grafik"><canvas id="g-fas"></canvas></div>
+      </div>
+      <div class="kartu">
+        <h2>Titik panas per hari</h2>
+        <p class="ket">Deteksi VIIRS NOAA-20 dan NOAA-21 di dalam cakupan peta, menurut wilayah.</p>
+        <div class="grafik"><canvas id="g-titik"></canvas></div>
+      </div>
+    </section>
+
+    <!-- 5. Penjelasan -->
+    <section class="kartu teks">
+      <h2>Cara membaca peta ini</h2>
+      <p>Warna pada peta adalah <b>indeks asap relatif</b> bernilai 0 sampai 1 di lapisan udara 0–100 m. Indeks ini menunjukkan di mana dan kapan asap lebih pekat menurut model, tetapi bukan konsentrasi PM2,5 dan belum bisa dibaca sebagai tingkat bahaya bagi kesehatan.</p>
+      <p>Empat kelas asap dibatasi oleh persentil ke-50, 75, dan 90 dari seluruh nilai indeks selama periode. Karena itu kelasnya bersifat relatif: “sangat tinggi” berarti termasuk 10% nilai terpekat dalam simulasi ini.</p>
+      <h2>Data dan metode</h2>
+      <ul>
+        <li><b>Model:</b> HYSPLIT v5.4.2 (NOAA ARL), mode dispersi partikel, keluaran rata-rata 3 jam pada grid 0,05°.</li>
+        <li><b>Sumber asap:</b> titik panas VIIRS 375 m NOAA-20 dan NOAA-21 dari NASA FIRMS (versi NRT, <i>confidence</i> nominal dan tinggi). Emisi tiap sumber sebanding dengan FRP harian, dilepas pada ketinggian 300 m.</li>
+        <li><b>Meteorologi:</b> GDAS1 1° dari NOAA ARL.</li>
+        <li><b>Fasilitas:</b> OpenStreetMap lewat ekspor HOTOSM di HDX (9 Oktober 2026).</li>
+        <li><b>Batas wilayah:</b> geoBoundaries (ADM2, 2020).</li>
+      </ul>
+      <h2>Batasan</h2>
+      <ul>
+        <li>Hasil berasal dari satu skenario dan belum divalidasi terhadap AOD satelit atau PM2,5 stasiun.</li>
+        <li>Meteorologi 1° (sekitar 111 km) jauh lebih kasar daripada jarak antarfasilitas, sehingga fasilitas yang berdekatan memperoleh nilai yang hampir sama.</li>
+        <li>Jumlah partikel model sedikit, sehingga peta per 3 jam tampak berbintik; tampilan harian lebih stabil.</li>
+        <li>Data fasilitas di OpenStreetMap untuk Kabupaten Sorong belum lengkap, terutama fasilitas kesehatan.</li>
+        <li>Titik panas adalah indikasi kebakaran, bukan konfirmasi di lapangan.</li>
+      </ul>
+      <h2>Unduh data</h2>
+      <p><a href="data/unduh/indeks_asap_harian_1-11okt2026.tif" download>Raster harian (GeoTIFF, 11 band)</a>, <a href="data/unduh/indeks_asap_3jam_1-11okt2026.tif" download>raster per 3 jam (GeoTIFF, 88 band)</a>, <a href="data/fasilitas.geojson" download>fasilitas (GeoJSON)</a>, <a href="data/titik_panas.json" download>titik panas (JSON)</a>.</p>
+    </section>
+  </main>
+
+  <footer class="kaki"><div class="isi">Produk tugas kuliah GD4103 Sistem Informasi Geografis untuk keperluan akademik. Peta dasar © OpenStreetMap contributors.</div></footer>
+
+  <script src="lib/leaflet/leaflet.js"></script>
+  <script src="lib/chart.umd.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+/* WebGIS Asap Karhutla Kabupaten Sorong */
+:root {
+  --tinta: #16302b; --tinta-2: #51655f; --garis: #d9e0dc; --kertas: #f4f7f5; --putih: #fff; --aksen: #0f6b5c;
+  --k0: #f1dfa6; --k1: #e0a458; --k2: #b5562b; --k3: #5b2a3c;
+  font-family: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--tinta); background: var(--kertas); font-size: 15px; line-height: 1.5; }
+h1, h2, p, ul, fieldset { margin: 0; padding: 0; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--aksen); outline-offset: 2px; }
+.isi { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
+
+.kepala { background: var(--tinta); color: #fff; padding: 26px 0 22px; }
+.kepala h1 { font-size: 28px; line-height: 1.15; font-weight: 650; letter-spacing: -0.01em; }
+.kepala p { margin-top: 6px; color: #dbe6e2; }
+.kepala .kecil { font-size: 13px; color: #a9bdb7; }
+
+.ringkas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 18px 0; }
+.ringkas div { background: var(--putih); border: 1px solid var(--garis); border-radius: 8px; padding: 14px 16px; }
+.ringkas strong { display: block; font-size: 26px; line-height: 1.1; font-weight: 650; font-variant-numeric: tabular-nums; }
+.ringkas span { display: block; margin-top: 4px; color: var(--tinta-2); font-size: 13px; }
+
+.kartu { background: var(--putih); border: 1px solid var(--garis); border-radius: 8px; padding: 18px; margin-bottom: 18px; }
+.kartu h2 { font-size: 17px; font-weight: 650; margin-bottom: 6px; }
+.ket { color: var(--tinta-2); font-size: 13.5px; max-width: 78ch; }
+.dua { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.grafik { position: relative; height: 260px; margin-top: 10px; }
+
+/* peta */
+.peta-kartu { display: grid; grid-template-columns: 270px 1fr; gap: 18px; padding: 18px; }
+#peta { height: 600px; border: 1px solid var(--garis); border-radius: 6px; background: #dfe7e4; }
+.leaflet-container { font: inherit; }
+.ubin-terang { filter: grayscale(1) brightness(1.06) contrast(0.9); }
+.kontrol fieldset { border: 0; margin: 12px 0; }
+.kontrol legend, .geser, .pilih { font-size: 13px; font-weight: 600; }
+.kontrol fieldset label { display: flex; gap: 8px; align-items: center; padding: 3px 0; font-size: 14px; cursor: pointer; }
+.waktu { background: var(--kertas); border-radius: 6px; padding: 10px 12px; }
+.waktu strong { display: block; font-size: 15px; font-variant-numeric: tabular-nums; min-height: 2.9em; }
+input[type="range"] { width: 100%; accent-color: var(--aksen); }
+.tombol-baris { display: flex; gap: 6px; }
+.tombol-baris button { flex: 1; }
+button { padding: 6px 12px; border: 1px solid var(--garis); background: var(--putih); border-radius: 6px; cursor: pointer; }
+button:hover { background: var(--kertas); }
+.geser, .pilih { display: block; margin: 12px 0; }
+.geser output { font-weight: 400; }
+.pilih select { display: block; width: 100%; margin-top: 4px; padding: 6px 8px; border: 1px solid var(--garis); border-radius: 6px; background: var(--putih); font-weight: 400; }
+.legenda { border-top: 1px solid var(--garis); padding-top: 10px; font-size: 13px; }
+.legenda b { display: block; margin-bottom: 4px; }
+.legenda div { display: flex; align-items: center; gap: 8px; padding: 2px 0; }
+.legenda i { width: 22px; height: 12px; border: 1px solid rgba(0,0,0,.3); flex: none; }
+.legenda i.bulat { width: 12px; height: 12px; border-radius: 50%; }
+.legenda hr { border: 0; border-top: 1px solid var(--garis); margin: 6px 0; }
+
+/* tabel */
+.saring { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: end; margin: 14px 0 8px; font-size: 13.5px; }
+.saring label { display: flex; flex-direction: column; gap: 4px; }
+.saring .cek { flex-direction: row; align-items: center; gap: 8px; padding-bottom: 6px; }
+.saring select, .saring input[type="search"] { padding: 6px 8px; border: 1px solid var(--garis); border-radius: 6px; background: var(--putih); min-width: 150px; }
+.tabel-wadah { max-height: 420px; overflow: auto; border: 1px solid var(--garis); border-radius: 6px; margin-top: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--garis); }
+th { position: sticky; top: 0; background: var(--kertas); font-weight: 600; font-size: 13px; }
+td.angka, th.angka { text-align: right; font-variant-numeric: tabular-nums; }
+tbody tr { cursor: pointer; }
+tbody tr:hover { background: var(--kertas); }
+.cap { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 12.5px; border: 1px solid rgba(0,0,0,.2); }
+
+.teks h2 { margin-top: 18px; }
+.teks h2:first-child { margin-top: 0; }
+.teks p, .teks ul { max-width: 78ch; margin-top: 6px; }
+.teks ul { padding-left: 20px; }
+.teks li { margin: 3px 0; }
+a { color: var(--aksen); }
+.kaki { color: var(--tinta-2); font-size: 13px; padding: 6px 0 28px; }
+
+@media (max-width: 860px) {
+  .ringkas { grid-template-columns: 1fr 1fr; }
+  .peta-kartu, .dua { grid-template-columns: 1fr; }
+  #peta { height: 440px; }
+}
